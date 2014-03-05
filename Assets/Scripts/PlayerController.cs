@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour {
 	public float gravity = 20.0f;
 	private float deltaX;
 	private float deltaY;
+	private Vector3 direction;
+	private float radialDeadZone = .25f;
 
 	//Components
 	private CharacterController controller;
@@ -36,14 +38,22 @@ public class PlayerController : MonoBehaviour {
 
 			deltaX = Input.GetAxis("GamepadAimHorizontal");
 			deltaY = Input.GetAxis("GamepadAimVertical");
+			direction = new Vector3(deltaX, deltaY, 0);
 
-			float angle = Mathf.Atan2(deltaY,deltaX);
 
-			if (deltaX != 0 && deltaY != 0) {
-				angle = angle * 180/Mathf.PI + 90;
-				Vector3 targetRotation = new Vector3(0,angle,0);
-				Debug.Log (angle);
-				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), 3f);
+			float angle = Mathf.Atan2(deltaY,deltaX) * 180/Mathf.PI + 90;
+
+
+
+			if (direction.magnitude > 0) {
+
+			//angle = angle * 180/Mathf.PI + 90;
+				if (direction.magnitude > radialDeadZone){
+					Vector3 targetRotation = new Vector3(0,angle,0);
+					Debug.Log (angle);
+					transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(targetRotation), 1f);
+				}
+
 			}
 
 		} else {
